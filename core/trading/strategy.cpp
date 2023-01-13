@@ -1,8 +1,9 @@
 #include "headers/strategy.h"
 #include "core/models/headers/portfolio.h"
+#include "core/models/headers/pricehistory.h"
 #include <vector>
-using std::string;
-using std::vector;
+#include <utility>
+using namespace std;
 
 TradingStrategy::TradingStrategy() : moving_averages(), exponential_moving_averages() {}
 
@@ -27,7 +28,7 @@ void TradingStrategy::set_moving_averages(const vector<int> value) { moving_aver
 
 void TradingStrategy::set_exponential_moving_averages(const vector<int> value) { exponential_moving_averages = value; }
 
-void TradingStrategy::execute_moving_average_strategy(Portfolio &port, vector<string> &tickers) {}
+void TradingStrategy::execute_moving_average_strategy(Portfolio &port, vector<PriceHistory> &tickers) {}
 
 void TradingStrategy::execute_arbitrage_strategy(Portfolio &port, vector<string> &tickers) {}
 
@@ -37,4 +38,4 @@ void TradingStrategy::execute_scalping_strategy(Portfolio &port, vector<string> 
 
 void TradingStrategy::execute_momentum_strategy(Portfolio &port, vector<string> &tickers) {}
 
-void TradingStrategy::execute_pairs_trading_strategy(Portfolio &port, vector<string> &tickers) {}
+void TradingStrategy::execute_pairs_trading_strategy(Portfolio &port, vector<pair<string, string>> &tickers) {}
