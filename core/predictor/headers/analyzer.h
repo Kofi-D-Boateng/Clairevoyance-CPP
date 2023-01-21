@@ -38,6 +38,21 @@ private:
     */
     double correlation_threshold;
 
+    /*
+        Helper function that is called when the user wants to generate
+        an exponential moving average. Weights will be generated based
+        on the window argument, and will range from 0 to 1 with earlier
+        prices taking smaller weights and earlier prices having stronger
+        weights.
+    */
+    vector<double> generate_ema(const PriceHistory &stock, const int &window) const;
+    /*
+        Helper function that is called when the user wants to generate
+        a simple moving average. The weight of each average will be equal
+        across all calculations.
+    */
+    vector<double> generate_sma(const PriceHistory &stock, const int &window) const;
+
 public:
     Analyzer();
     Analyzer(const double &arbitrage_thresh);

@@ -11,10 +11,9 @@
 #include <ostream>
 #include <string>
 #include <vector>
-#include <map>
 
-using std::map;
 using std::string;
+using std::vector;
 
 enum class PeriodType
 {
@@ -34,18 +33,30 @@ enum class FrequencyType
 
 class PriceHistory
 {
+public:
+    class CandleStick
+    {
+    public:
+        double datetime;
+        double open;
+        double close;
+        double high;
+        double low;
+        double volume;
+
+        CandleStick();
+        CandleStick(const double &datetime, const double &open, const double &close, const double &high, const double &low, const double &volume);
+    };
+
 private:
     /*
         The ticker symbol associated with the given history
     */
     string ticker;
     /*
-        A Map containing the open,close,high,low, and adjusted volume
-        of a stock. The outer mapping key will be a some sort of time
-        series to keep the inner maps in order from latest time slot,
-        to earliest.
+        A vector of candles
     */
-    map<double, map<string, double>> stock_data;
+    vector<CandleStick> candles;
     /*
         The period of time for which the stock data was pulled from.
         (i.e. 2 day or 3 month).
@@ -66,6 +77,9 @@ private:
         The periods within the enum are DAY,MONTH,YEAR,YTD
         (Year to date). These flags represent the type of
         charting style the data was pulled as (i.e. 2-DAY chart)
+
+        If using a price history that was generated with timestamps,
+        set period to 0.
     */
     PeriodType periodType;
     /*
@@ -86,7 +100,7 @@ private:
 public:
     // Constructor
     PriceHistory();
-    PriceHistory(const string &ticker, const map<double, map<string, double>> &info, const PeriodType &period_type);
+    PriceHistory(const string &ticker, const vector<CandleStick> &candles, const int &period, const PeriodType &period_type, const FrequencyType &freq_type, const int &frequency);
 
     // Copy Constructor
     PriceHistory(const PriceHistory &obj);
@@ -101,13 +115,25 @@ public:
 
     string get_ticker() const;
 
-    map<double, map<string, double>> get_stock_data() const;
+    vector<CandleStick> get_candles() const;
 
     PeriodType get_period_type() const;
 
+    FrequencyType get_frequecy_type() const;
+
+    int get_period() const;
+
+    int get_frequency() const;
+
     void set_ticker(const string &ticker);
 
-    void set_stock_data(const map<double, map<string, double>> &stock_data);
+    void set_candles(const vector<CandleStick> &stock_data);
+
+    void set_period(const int &period);
 
     void set_period_type(const PeriodType &period_type);
+
+    void set_frequency_type(const FrequencyType &freq_type);
+
+    void set_frequency(const int &freq);
 };

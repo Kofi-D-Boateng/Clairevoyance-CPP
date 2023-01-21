@@ -67,8 +67,57 @@ unordered_map<PriceHistory, unordered_map<PriceHistory, double>> Analyzer::gener
     return corr_map;
 }
 
+// THIS IS NOT DONE!!!!!
+vector<double> Analyzer::generate_sma(const PriceHistory &stock, const int &window) const
+{
+    vector<double> sma;
+    vector<PriceHistory::CandleStick> candles = stock.get_candles();
+    int start{0}, end{1}, endOfCandles{candles.size() - 1};
+
+    /*
+        We will loop through the window, calculate the average, and slide
+        the start pointer up one spot and bring end pointer to start+1
+        until we reach the end of the candle stack. We will handle other
+        averages in another loop.
+    */
+    while (end != endOfCandles)
+    {
+        int counter{0};
+        double sum{candles.at(start).close};
+        while (counter != window)
+        {
+            sum += candles.at(end).close;
+            counter++;
+            end++;
+        }
+        sma.push_back(sum / window);
+        start++;
+        end = start + 1;
+        counter = 0;
+    }
+
+    /*
+        This loop handles all the prices that cannot be averaged within the
+        window because we have exhausted more prehistoric data than latest.
+    */
+
+    //    while(start != end)
+}
+
 vector<double> Analyzer::generate_moving_average(const PriceHistory &stock, const int &window, const MovingAverageType type) const
 {
+    if (type == MovingAverageType::SIMPLE)
+    {
+        return generate_sma(stock, window);
+    }
+
+    if (type == MovingAverageType::EXPONENTIAL)
+    {
+        return generate_ema(stock, window);
+    }
+
+    vector<double> empty;
+    return empty;
 }
 
 unordered_map<PriceHistory, map<int, vector<double>>> Analyzer::generate_moving_averages_map(const PriceHistory &stock, const vector<int> &windows, const MovingAverageType type) const
