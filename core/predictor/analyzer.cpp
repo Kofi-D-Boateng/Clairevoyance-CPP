@@ -67,8 +67,84 @@ unordered_map<PriceHistory, unordered_map<PriceHistory, double>> Analyzer::gener
     return corr_map;
 }
 
-// THIS IS NOT DONE!!!!!
-vector<pair<double, double>> Analyzer::generate_sma(const PriceHistory &stock, const int &window) const
+vector<pair<double, double>> Analyzer::generate_dynamic_ema(const PriceHistory &stock, const double &window) const
+{
+    vector<pair<double, double>> ema;
+    vector<PriceHistory::CandleStick> candles = stock.get_candles();
+
+    if (window > candles.size())
+    {
+        cout << "There is not enough data to create a " << window << " day moving average" << endl;
+        return ema;
+    }
+
+    int start{0}, end{1}, endOfCandles{candles.size() - 1};
+
+    while (end != endOfCandles)
+    {
+        int counter{0};
+        double alpha{1.0 / window}, weight = 0;
+        double curr_ema{candles.at(start).close}, date{0};
+        while (counter != window)
+        {
+            weight += alpha;
+            curr_ema = (candles.at(end).close * alpha) + (curr_ema * (1 - alpha));
+            if ((window / 2) == counter)
+            {
+                date = candles.at(end).datetime;
+            }
+
+            counter++;
+            end++;
+        }
+
+        pair<double, double> dateAvgPair;
+        dateAvgPair.first = date;
+        dateAvgPair.second = curr_ema;
+        ema.push_back(dateAvgPair);
+
+        start++;
+        end = start + 1;
+        counter = 0;
+    }
+
+    return ema;
+}
+
+vector<pair<double, double>> Analyzer::generate_ema(const PriceHistory &stock, const double &window) const
+{
+    vector<pair<double, double>> ema;
+    vector<PriceHistory::CandleStick> candles = stock.get_candles();
+    int start{0}, end{1}, endOfCandles{candles.size() - 1};
+    double alpha{2.0 / (window + 1.0)};
+    while (end != endOfCandles)
+    {
+        int counter{0};
+        double curr_ema{candles.at(start).close}, date{0};
+        while (counter++ != window)
+        {
+            curr_ema = (candles.at(end).close * alpha) + (curr_ema * (1 - alpha));
+            if ((window / 2) == counter)
+            {
+                date = candles.at(end).datetime;
+            }
+            end++;
+        }
+
+        pair<double, double> dateAvgPair;
+        dateAvgPair.first = date;
+        dateAvgPair.second = curr_ema;
+        ema.push_back(dateAvgPair);
+
+        start++;
+        end = start + 1;
+        counter = 0;
+    }
+
+    return ema;
+}
+
+vector<pair<double, double>> Analyzer::generate_sma(const PriceHistory &stock, const double &window) const
 {
     vector<pair<double, double>> sma;
     vector<PriceHistory::CandleStick> candles = stock.get_candles();
@@ -111,7 +187,7 @@ vector<pair<double, double>> Analyzer::generate_sma(const PriceHistory &stock, c
     return sma;
 }
 
-vector<pair<double, double>> Analyzer::generate_moving_average(const PriceHistory &stock, const int &window, const MovingAverageType type) const
+vector<pair<double, double>> Analyzer::generate_moving_average(const PriceHistory &stock, const double &window, const MovingAverageType type) const
 {
     if (type == MovingAverageType::SIMPLE)
     {
@@ -127,7 +203,7 @@ vector<pair<double, double>> Analyzer::generate_moving_average(const PriceHistor
     return empty;
 }
 
-unordered_map<PriceHistory, map<int, vector<pair<double, double>>>> Analyzer::generate_moving_averages_map(const PriceHistory &stock, const vector<int> &windows, const MovingAverageType type) const
+unordered_map<PriceHistory, map<int, vector<pair<double, double>>>> Analyzer::generate_moving_averages_map(const PriceHistory &stock, const vector<double> &windows, const MovingAverageType type) const
 {
     unordered_map<PriceHistory, map<int, vector<pair<double, double>>>> ma_map;
     map<int, vector<pair<double, double>>> inner_map;
@@ -140,7 +216,7 @@ unordered_map<PriceHistory, map<int, vector<pair<double, double>>>> Analyzer::ge
     return ma_map;
 }
 
-unordered_map<PriceHistory, map<int, vector<pair<double, double>>>> Analyzer::generate_moving_averages_map(const vector<PriceHistory> &stock_vec, const int &window, const MovingAverageType type) const
+unordered_map<PriceHistory, map<int, vector<pair<double, double>>>> Analyzer::generate_moving_averages_map(const vector<PriceHistory> &stock_vec, const double &window, const MovingAverageType type) const
 {
     unordered_map<PriceHistory, map<int, vector<pair<double, double>>>> ma_map;
     for (auto stock : stock_vec)
@@ -153,7 +229,7 @@ unordered_map<PriceHistory, map<int, vector<pair<double, double>>>> Analyzer::ge
     return ma_map;
 }
 
-unordered_map<PriceHistory, map<int, vector<pair<double, double>>>> Analyzer::generate_moving_averages_map(const vector<PriceHistory> &stock_vec, const vector<int> &windows, const MovingAverageType type) const
+unordered_map<PriceHistory, map<int, vector<pair<double, double>>>> Analyzer::generate_moving_averages_map(const vector<PriceHistory> &stock_vec, const vector<double> &windows, const MovingAverageType type) const
 {
     unordered_map<PriceHistory, map<int, vector<pair<double, double>>>> ma_map;
     for (auto stock : stock_vec)
@@ -169,9 +245,9 @@ unordered_map<PriceHistory, map<int, vector<pair<double, double>>>> Analyzer::ge
     return ma_map;
 }
 
-string Analyzer::generate_stock_momentum(const PriceHistory &stock, const int &window) const {}
+string Analyzer::generate_stock_momentum(const PriceHistory &stock, const double &window) const {}
 
-unordered_map<PriceHistory, string> Analyzer::generate_stocks_momentum_map(const vector<PriceHistory> &stock_vec, const int &window) const
+unordered_map<PriceHistory, string> Analyzer::generate_stocks_momentum_map(const vector<PriceHistory> &stock_vec, const double &window) const
 {
     unordered_map<PriceHistory, string> momentum_map;
     for (auto stock : stock_vec)
