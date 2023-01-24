@@ -53,19 +53,21 @@ public:
 
     void set_exponential_moving_averages(const vector<int> values);
 
-    void execute_arbitrage_strategy(Portfolio &portfolio, vector<PriceHistory> &tickers);
+    void execute_arbitrage_strategy(Portfolio &portfolio, vector<PriceHistory> &stocks);
 
-    void execute_mean_reversion_strategy(Portfolio &portfolio, vector<PriceHistory> &tickers);
+    void execute_mean_reversion_strategy(Portfolio &portfolio, vector<PriceHistory> &stocks);
 
-    void execute_scalping_strategy(Portfolio &portfolio, vector<PriceHistory> &tickers);
+    void execute_scalping_strategy(Portfolio &portfolio, vector<PriceHistory> &stocks);
 
-    void execute_momentum_strategy(Portfolio &portfolio, vector<PriceHistory> &tickers);
+    void execute_momentum_strategy(Portfolio &portfolio, vector<PriceHistory> &stocks);
 
     void execute_pairs_trading_strategy(Portfolio &portfolio, vector<pair<PriceHistory, PriceHistory>> &ticker_pairs);
 
-    // The moving average strategy will take in a portfolio class and vector of tickers
-    // and their price history, and will return a unorder mapping of tickers and the
+    void execute_bollinger_band_strategy(Portfolio &portfolio, vector<PriceHistory> &stocks);
+
+    // The moving average strategy will take in a portfolio class and vector of stocks
+    // and their price history, and will return a unorder mapping of stocks and the
     // amount of shares that should be up for consideration to buy given portfolio
     // constraints designated, and the moving averages and exponential moving averages specified.
-    void execute_moving_average_strategy(Portfolio &portfolio, vector<PriceHistory> &tickers);
+    void execute_moving_average_strategy(Portfolio &portfolio, vector<PriceHistory> &stocks);
 };

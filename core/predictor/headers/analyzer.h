@@ -45,13 +45,13 @@ private:
         prices taking smaller weights and earlier prices having stronger
         weights.
     */
-    vector<double> generate_ema(const PriceHistory &stock, const int &window) const;
+    vector<pair<double, double>> generate_ema(const PriceHistory &stock, const int &window) const;
     /*
         Helper function that is called when the user wants to generate
         a simple moving average. The weight of each average will be equal
         across all calculations.
     */
-    vector<double> generate_sma(const PriceHistory &stock, const int &window) const;
+    vector<pair<double, double>> generate_sma(const PriceHistory &stock, const int &window) const;
 
 public:
     Analyzer();
@@ -106,24 +106,21 @@ public:
     /*
         Takes in a stock and a window, and will return the simple moving average of the
         stock based on the window designated.
-
-        The Simple Moving Average, is an averaging of a stock price that smooths out the
-        price changes and shows a average trend of the stock. Each price is weighted
-        equally across the Time Series.
     */
-    vector<double> generate_moving_average(const PriceHistory &stock, const int &window, const MovingAverageType type) const;
+    vector<pair<double, double>> generate_moving_average(const PriceHistory &stock, const int &window, const MovingAverageType type) const;
 
     /*
-        Returns an unorder map with the key being a stock and the value
-        being a ordered map with the key being a window and the values
-        being a vector of either a simple moving average or exponential
-        moving average.
+        Takes in a single stock or a vector of stocks and window or
+        vector of windows and returns an unorder map with the key
+        being a stock and the value being a ordered map with the
+        key being a window and the values being a vector of either
+        a simple moving average or exponential moving average.
     */
-    unordered_map<PriceHistory, map<int, vector<double>>> generate_moving_averages_map(const PriceHistory &stock, const vector<int> &windows, const MovingAverageType type) const;
+    unordered_map<PriceHistory, map<int, vector<pair<double, double>>>> generate_moving_averages_map(const PriceHistory &stock, const vector<int> &windows, const MovingAverageType type) const;
 
-    unordered_map<PriceHistory, map<int, vector<double>>> generate_moving_averages_map(const vector<PriceHistory> &stock_vec, const int &window, const MovingAverageType type) const;
+    unordered_map<PriceHistory, map<int, vector<pair<double, double>>>> generate_moving_averages_map(const vector<PriceHistory> &stock_vec, const int &window, const MovingAverageType type) const;
 
-    unordered_map<PriceHistory, map<int, vector<double>>> generate_moving_averages_map(const vector<PriceHistory> &stock_vec, const vector<int> &windows, const MovingAverageType type) const;
+    unordered_map<PriceHistory, map<int, vector<pair<double, double>>>> generate_moving_averages_map(const vector<PriceHistory> &stock_vec, const vector<int> &windows, const MovingAverageType type) const;
 
     /*
         Takes in a stock and a window used to calculate a exponential moving average, and

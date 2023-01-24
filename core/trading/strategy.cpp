@@ -39,3 +39,5 @@ void TradingStrategy::execute_scalping_strategy(Portfolio &port, vector<PriceHis
 void TradingStrategy::execute_momentum_strategy(Portfolio &port, vector<PriceHistory> &stockVec) {}
 
 void TradingStrategy::execute_pairs_trading_strategy(Portfolio &port, vector<pair<PriceHistory, PriceHistory>> &stockPairVec) {}
+
+void TradingStrategy::execute_bollinger_band_strategy(Portfolio &port, vector<PriceHistory> &stockVec) {}
