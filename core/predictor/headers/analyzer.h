@@ -154,16 +154,16 @@ public:
     unordered_map<PriceHistory, map<int, vector<pair<double, double>>>> generate_moving_averages_map(const vector<PriceHistory> &stock_vec, const vector<double> &windows, const MovingAverageType type) const;
 
     /*
-        Takes in a stock and a window used to calculate a exponential moving average, and
-        will return a string stating whether the trend is "up" or if the trend is "down".
-
-        An EMA (exponential moving average) is an average, similar to a simple moving average,
-        that will show the trend of a stock over a certain period of time. The EMA however will
-        add more weight to recent prices in the stock as to reflect its current market situation.
-        A small EMA window will be very sensitive to price changes, whereas a wide window will
-        not be as sensitive but will still reflect trend sentiment.
+        Takes in a stock and two windows, a long term moving average window,
+        and a short term moving average window, and print a string to the
+        screen regarding the short term and long term trend of the stock
     */
-    string generate_stock_momentum(const PriceHistory &stock, const double &window) const;
+    string generate_stock_trend(const PriceHistory &stock, const double &short_term_window, const double &long_term_window) const;
 
-    unordered_map<PriceHistory, string> generate_stocks_momentum_map(const vector<PriceHistory> &stock_vec, const double &windows) const;
+    /*
+        Takes in a vector of stocks and two windows, a long term moving average window,
+        and a short term moving average window, and print a string to the
+        screen regarding the short term and long term trend of the stock
+    */
+    unordered_map<PriceHistory, string> generate_stocks_trend_map(const vector<PriceHistory> &stock_vec, const double &short_term_window, const double &long_term_window) const;
 };

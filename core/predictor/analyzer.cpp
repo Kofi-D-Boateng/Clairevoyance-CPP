@@ -35,6 +35,7 @@ void Analyzer::set_arbitrage_threshold(const double &arb) { arbitrage_threshold 
 
 void Analyzer::set_correlation_threshold(const double &corr) { correlation_threshold = corr; }
 
+// FIND A COMPUTATIONAL LIBRARY TO ADD TO THE ANALYZER
 double Analyzer::generate_correlation_value(PriceHistory &stock1, PriceHistory &stock2)
 {
 }
@@ -245,14 +246,27 @@ unordered_map<PriceHistory, map<int, vector<pair<double, double>>>> Analyzer::ge
     return ma_map;
 }
 
-string Analyzer::generate_stock_momentum(const PriceHistory &stock, const double &window) const {}
+string Analyzer::generate_stock_trend(const PriceHistory &stock, const double &short_term_window, const double &long_term_window) const
+{
+    vector<pair<double, double>> short_term_ema = generate_ema(stock, short_term_window);
+    vector<pair<double, double>> long_term_ema = generate_ema(stock, long_term_window);
+    vector<PriceHistory::CandleStick> candles = stock.get_candles();
+    // Use Futures API to run parallel percent change functions for the
+    // regular stock price, and the short & long term windows.
 
-unordered_map<PriceHistory, string> Analyzer::generate_stocks_momentum_map(const vector<PriceHistory> &stock_vec, const double &window) const
+    double stock_percentage_change = ((candles.at(candles.size() - 1).close - candles.at(0).close) / candles.at(0).close) * 100.00;
+    double short_term_percentage_change = ((short_term_ema.at(short_term_ema.size() - 1).second - short_term_ema.at(0).second) / short_term_ema.at(0).second) * 100.00;
+    double long_term_percentage_change = ((long_term_ema.at(long_term_ema.size() - 1).second - long_term_ema.at(0).second) / long_term_ema.at(0).second) * 100.00;
+
+    return "";
+}
+
+unordered_map<PriceHistory, string> Analyzer::generate_stocks_trend_map(const vector<PriceHistory> &stock_vec, const double &short_term_window, const double &long_term_window) const
 {
     unordered_map<PriceHistory, string> momentum_map;
     for (auto stock : stock_vec)
     {
-        string momentum = generate_stock_momentum(stock, window);
+        string momentum = generate_stock_trend(stock, short_term_window, long_term_window);
         momentum_map[stock] = momentum;
     }
     return momentum_map;
