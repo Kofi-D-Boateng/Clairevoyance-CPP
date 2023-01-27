@@ -26,18 +26,18 @@ private:
     // simple moving averages. These averages will help smooth
     // out the noise regarding the price movement and trend of
     // the stock.
-    vector<int> moving_averages;
+    vector<double> moving_averages;
 
     // A vector of exponentional moving averages. These averages
     // add more weight to the most recent of prices, reflecting
     // current movements within the stock pricing.
-    vector<int> exponential_moving_averages;
+    vector<double> exponential_moving_averages;
 
 public:
     // Constructors
     TradingStrategy();
-    TradingStrategy(const vector<int> moving_averages);
-    TradingStrategy(const vector<int> moving_averages, vector<int> exponential_moving_averages);
+    TradingStrategy(const vector<double> moving_averages);
+    TradingStrategy(const vector<double> moving_averages, vector<double> exponential_moving_averages);
 
     // Copy Constructor
     TradingStrategy(const TradingStrategy &obj);
@@ -49,17 +49,17 @@ public:
 
     // ===================================== PUBLIC METHODS =========================================
 
-    void set_moving_averages(const vector<int> values);
+    void set_moving_averages(const vector<double> values);
 
-    void set_exponential_moving_averages(const vector<int> values);
+    void set_exponential_moving_averages(const vector<double> values);
 
     void execute_arbitrage_strategy(Portfolio &portfolio, vector<PriceHistory> &stocks);
 
     void execute_mean_reversion_strategy(Portfolio &portfolio, vector<PriceHistory> &stocks);
 
-    void execute_scalping_strategy(Portfolio &portfolio, vector<PriceHistory> &stocks);
+    void execute_scalping_strategy(Portfolio &portfolio, vector<PriceHistory> &stocks, const int &duration);
 
-    void execute_momentum_strategy(Portfolio &portfolio, vector<PriceHistory> &stocks);
+    void execute_momentum_strategy(Portfolio &portfolio, vector<PriceHistory> &stocks, MovingAverageType &type);
 
     void execute_pairs_trading_strategy(Portfolio &portfolio, vector<pair<PriceHistory, PriceHistory>> &ticker_pairs);
 
