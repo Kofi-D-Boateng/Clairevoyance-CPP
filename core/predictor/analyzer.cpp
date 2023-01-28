@@ -235,14 +235,14 @@ unordered_map<PriceHistory, map<double, vector<pair<double, double>>>> Analyzer:
 string Analyzer::generate_stock_trend(const PriceHistory &stock, const double &short_term_window, const double &long_term_window) const
 {
     vector<pair<double, double>> short_term_ema = generate_ema(stock, short_term_window);
-    vector<pair<double, double>> long_term_ema = generate_ema(stock, long_term_window);
+    vector<pair<double, double>> long_term_sma = generate_sma(stock, long_term_window);
     vector<PriceHistory::CandleStick> candles = stock.get_candles();
     // Use Futures API to run parallel percent change functions for the
     // regular stock price, and the short & long term windows.
 
     double stock_percentage_change = ((candles.at(candles.size() - 1).close - candles.at(0).close) / candles.at(0).close) * 100.00;
     double short_term_percentage_change = ((short_term_ema.at(short_term_ema.size() - 1).second - short_term_ema.at(0).second) / short_term_ema.at(0).second) * 100.00;
-    double long_term_percentage_change = ((long_term_ema.at(long_term_ema.size() - 1).second - long_term_ema.at(0).second) / long_term_ema.at(0).second) * 100.00;
+    double long_term_percentage_change = ((long_term_sma.at(long_term_sma.size() - 1).second - long_term_sma.at(0).second) / long_term_sma.at(0).second) * 100.00;
 
     stringstream long_term;
     stringstream short_term;
