@@ -82,12 +82,12 @@ vector<pair<double, double>> Analyzer::generate_dynamic_ema(const PriceHistory &
 
     int start{0}, end{1}, endOfCandles{candles.size() - 1};
 
-    while (end != endOfCandles)
+    while (end <= endOfCandles)
     {
         int counter{0};
         double alpha{1.0 / window}, weight = 0;
         double curr_ema{candles.at(start).close}, date{0};
-        while (counter++ != window)
+        while (counter++ <= window)
         {
             weight += alpha;
             curr_ema = (candles.at(end++).close * alpha) + (curr_ema * (1 - alpha));
@@ -113,11 +113,11 @@ vector<pair<double, double>> Analyzer::generate_ema(const PriceHistory &stock, c
     int start{0}, end{1}, endOfCandles{candles.size() - 1};
     double alpha{2.0 / (window + 1.0)};
 
-    while (end != endOfCandles)
+    while (end <= endOfCandles)
     {
         int counter{0};
         double curr_ema{candles.at(start).close};
-        while (counter++ != window)
+        while (counter++ <= window)
         {
             curr_ema = (candles.at(end++).close * alpha) + (curr_ema * (1 - alpha));
         }
@@ -147,11 +147,11 @@ vector<pair<double, double>> Analyzer::generate_sma(const PriceHistory &stock, c
         until we reach the end of the candle stack. We will handle other
         averages in another loop.
     */
-    while (end != endOfCandles)
+    while (end <= endOfCandles)
     {
         int counter{0};
         double sum{candles.at(start).close};
-        while (counter++ != window)
+        while (counter++ <= window)
         {
             sum += candles.at(end++).close;
         }
