@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include <stdexcept>
 #include <ostream>
 #include <unordered_map>
@@ -86,21 +87,14 @@ vector<pair<double, double>> Analyzer::generate_dynamic_ema(const PriceHistory &
         int counter{0};
         double alpha{1.0 / window}, weight = 0;
         double curr_ema{candles.at(start).close}, date{0};
-        while (counter != window)
+        while (counter++ != window)
         {
             weight += alpha;
-            curr_ema = (candles.at(end).close * alpha) + (curr_ema * (1 - alpha));
-            if ((window / 2) == counter)
-            {
-                date = candles.at(end).datetime;
-            }
-
-            counter++;
-            end++;
+            curr_ema = (candles.at(end++).close * alpha) + (curr_ema * (1 - alpha));
         }
 
         pair<double, double> dateAvgPair;
-        dateAvgPair.first = date;
+        dateAvgPair.first = candles.at(end).datetime;
         dateAvgPair.second = curr_ema;
         ema.push_back(dateAvgPair);
 
@@ -118,22 +112,18 @@ vector<pair<double, double>> Analyzer::generate_ema(const PriceHistory &stock, c
     vector<PriceHistory::CandleStick> candles = stock.get_candles();
     int start{0}, end{1}, endOfCandles{candles.size() - 1};
     double alpha{2.0 / (window + 1.0)};
+
     while (end != endOfCandles)
     {
         int counter{0};
-        double curr_ema{candles.at(start).close}, date{0};
+        double curr_ema{candles.at(start).close};
         while (counter++ != window)
         {
-            curr_ema = (candles.at(end).close * alpha) + (curr_ema * (1 - alpha));
-            if ((window / 2) == counter)
-            {
-                date = candles.at(end).datetime;
-            }
-            end++;
+            curr_ema = (candles.at(end++).close * alpha) + (curr_ema * (1 - alpha));
         }
 
         pair<double, double> dateAvgPair;
-        dateAvgPair.first = date;
+        dateAvgPair.first = candles.at(end).datetime;
         dateAvgPair.second = curr_ema;
         ema.push_back(dateAvgPair);
 
@@ -160,26 +150,22 @@ vector<pair<double, double>> Analyzer::generate_sma(const PriceHistory &stock, c
     while (end != endOfCandles)
     {
         int counter{0};
-        double sum{candles.at(start).close}, double date{0};
-        while (counter != window)
+        double sum{candles.at(start).close};
+        while (counter++ != window)
         {
-            sum += candles.at(end).close;
-            counter++;
-            end++;
-            if ((window / 2) == counter)
-            {
-                date = candles.at(end).datetime;
-            }
+            sum += candles.at(end++).close;
         }
 
         /*
             Creating a pair where first is the timestamp where the average is calculated to,
             and second is the average.
         */
+
         pair<double, double> dateAvgPair;
-        dateAvgPair.first = date;
+        dateAvgPair.first = candles.at(end).datetime;
         dateAvgPair.second = sum / window;
         sma.push_back(dateAvgPair);
+
         start++;
         end = start + 1;
         counter = 0;
@@ -258,7 +244,31 @@ string Analyzer::generate_stock_trend(const PriceHistory &stock, const double &s
     double short_term_percentage_change = ((short_term_ema.at(short_term_ema.size() - 1).second - short_term_ema.at(0).second) / short_term_ema.at(0).second) * 100.00;
     double long_term_percentage_change = ((long_term_ema.at(long_term_ema.size() - 1).second - long_term_ema.at(0).second) / long_term_ema.at(0).second) * 100.00;
 
-    return "";
+    stringstream long_term;
+    stringstream short_term;
+    stringstream message;
+
+    if (long_term_percentage_change <= 0)
+    {
+        long_term << "The long term trend for" << stock.get_ticker() << " is downard with a percent change of " << long_term_percentage_change;
+    }
+    else
+    {
+        long_term << "The long term trend for" << stock.get_ticker() << " is upward with a percent change of " << long_term_percentage_change;
+    }
+
+    if (short_term_percentage_change <= 0)
+    {
+        short_term << "The long term trend for" << stock.get_ticker() << " is downard with a percent change of " << short_term_percentage_change;
+    }
+    else
+    {
+        short_term << "The long term trend for" << stock.get_ticker() << " is upward with a percent change of " << short_term_percentage_change;
+    }
+
+    message << long_term.str() << ". " << short_term.str();
+
+    return message.str();
 }
 
 unordered_map<PriceHistory, string> Analyzer::generate_stocks_trend_map(const vector<PriceHistory> &stock_vec, const double &short_term_window, const double &long_term_window) const
