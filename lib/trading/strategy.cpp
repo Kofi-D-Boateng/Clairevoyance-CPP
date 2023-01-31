@@ -1,7 +1,8 @@
-#include "headers/strategy.h"
-#include "core/models/headers/portfolio.h"
-#include "core/models/headers/pricehistory.h"
-#include "core/predictor/headers/analyzer.h"
+
+#include "include/portfolio.h"
+#include "include/pricehistory.h"
+#include "include/strategy.h"
+#include "include/analyzer.h"
 #include <vector>
 #include <utility>
 using namespace std;

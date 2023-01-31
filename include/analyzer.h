@@ -15,7 +15,7 @@
 #include <vector>
 #include <string>
 #include <utility>
-#include <core/models/headers/pricehistory.h>
+#include "pricehistory.h"
 using namespace std;
 
 enum class MovingAverageType

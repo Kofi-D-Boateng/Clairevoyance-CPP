@@ -13,9 +13,9 @@
 #include <vector>
 #include <string>
 #include <utility>
-#include "core/models/headers/portfolio.h"
-#include "core/models/headers/pricehistory.h"
-#include "core/predictor/headers/analyzer.h"
+#include "portfolio.h"
+#include "pricehistory.h"
+#include "analyzer.h"
 using std::pair;
 using std::string;
 using std::vector;
