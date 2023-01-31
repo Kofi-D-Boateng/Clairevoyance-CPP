@@ -7,8 +7,8 @@
 #include <vector>
 #include <string>
 #include <utility>
-#include "core/predictor/headers/analyzer.h"
-#include "core/models/headers/pricehistory.h"
+#include "include/analyzer.h"
+#include "include/pricehistory.h"
 using namespace std;
 
 Analyzer::Analyzer() : arbitrage_threshold(0), correlation_threshold(0){};

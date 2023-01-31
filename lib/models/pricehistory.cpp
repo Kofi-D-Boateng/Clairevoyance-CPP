@@ -1,6 +1,6 @@
 #include <vector>
 #include <string>
-#include <core/models/headers/pricehistory.h>
+#include "include/pricehistory.h"
 
 using std::string;
 using std::vector;
