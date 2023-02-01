@@ -6,7 +6,7 @@ A framework created to help investors make smarter decisions for trades.
 
 ## Other versions
 
-- [Clairevoyance C++](https://github.com/Kofi-D-Boateng/Clairevoyance-Python)
+- [Clairevoyance Python](https://github.com/Kofi-D-Boateng/Clairevoyance-Python)
 
 ## Auxiliary Applications
 
