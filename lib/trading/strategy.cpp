@@ -5,6 +5,8 @@
 #include "include/analyzer.h"
 #include <vector>
 #include <utility>
+#include <map>
+#include <unordered_map>
 using namespace std;
 
 TradingStrategy::TradingStrategy(Analyzer &a) : analyzer(a) {}

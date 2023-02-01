@@ -2,14 +2,18 @@
 #include <sstream>
 #include <stdexcept>
 #include <ostream>
-#include <unordered_map>
 #include <map>
 #include <vector>
 #include <string>
 #include <utility>
 #include "include/analyzer.h"
 #include "include/pricehistory.h"
-using namespace std;
+
+using std::vector;
+using std::map;
+using std::pair;
+using std::string;
+using std::stringstream;
 
 Analyzer::Analyzer() : arbitrage_threshold(0), correlation_threshold(0){};
 
@@ -41,9 +45,9 @@ double Analyzer::generate_correlation_value(PriceHistory &stock1, PriceHistory &
 {
 }
 
-unordered_map<pair<PriceHistory, PriceHistory>, double> Analyzer::generate_correlation_map(const vector<pair<PriceHistory, PriceHistory>> &stock_pairs_list)
+map<pair<PriceHistory, PriceHistory>, double> Analyzer::generate_correlation_map(const vector<pair<PriceHistory, PriceHistory>> &stock_pairs_list)
 {
-    unordered_map<pair<PriceHistory, PriceHistory>, double> pair_map;
+    map<pair<PriceHistory, PriceHistory>, double> pair_map;
     for (auto stock_pair : stock_pairs_list)
     {
         auto value = generate_correlation_value(stock_pair.first, stock_pair.second);
@@ -52,9 +56,9 @@ unordered_map<pair<PriceHistory, PriceHistory>, double> Analyzer::generate_corre
     return pair_map;
 }
 
-unordered_map<PriceHistory, unordered_map<PriceHistory, double>> Analyzer::generate_correlation_map(const vector<PriceHistory> &stock_vec)
+map<PriceHistory, map<PriceHistory, double>> Analyzer::generate_correlation_map(const vector<PriceHistory> &stock_vec)
 {
-    unordered_map<PriceHistory, unordered_map<PriceHistory, double>> corr_map;
+    map<PriceHistory, map<PriceHistory, double>> corr_map;
     for (int i = 0; i < stock_vec.size(); i++)
     {
         int j = i + 1;
@@ -190,9 +194,9 @@ vector<pair<double, double>> Analyzer::generate_moving_average(const PriceHistor
     return empty;
 }
 
-unordered_map<PriceHistory, map<double, vector<pair<double, double>>>> Analyzer::generate_moving_averages_map(const PriceHistory &stock, const vector<double> &windows, const MovingAverageType type) const
+map<PriceHistory, map<double, vector<pair<double, double>>>> Analyzer::generate_moving_averages_map(const PriceHistory &stock, const vector<double> &windows, const MovingAverageType type) const
 {
-    unordered_map<PriceHistory, map<double, vector<pair<double, double>>>> ma_map;
+    map<PriceHistory, map<double, vector<pair<double, double>>>> ma_map;
     map<double, vector<pair<double, double>>> inner_map;
     for (auto window : windows)
     {
@@ -203,9 +207,9 @@ unordered_map<PriceHistory, map<double, vector<pair<double, double>>>> Analyzer:
     return ma_map;
 }
 
-unordered_map<PriceHistory, map<double, vector<pair<double, double>>>> Analyzer::generate_moving_averages_map(const vector<PriceHistory> &stock_vec, const double &window, const MovingAverageType type) const
+map<PriceHistory, map<double, vector<pair<double, double>>>> Analyzer::generate_moving_averages_map(const vector<PriceHistory> &stock_vec, const double &window, const MovingAverageType type) const
 {
-    unordered_map<PriceHistory, map<double, vector<pair<double, double>>>> ma_map;
+    map<PriceHistory, map<double, vector<pair<double, double>>>> ma_map;
     for (auto stock : stock_vec)
     {
         auto ma = generate_moving_average(stock, window, type);
@@ -216,9 +220,9 @@ unordered_map<PriceHistory, map<double, vector<pair<double, double>>>> Analyzer:
     return ma_map;
 }
 
-unordered_map<PriceHistory, map<double, vector<pair<double, double>>>> Analyzer::generate_moving_averages_map(const vector<PriceHistory> &stock_vec, const vector<double> &windows, const MovingAverageType type) const
+map<PriceHistory, map<double, vector<pair<double, double>>>> Analyzer::generate_moving_averages_map(const vector<PriceHistory> &stock_vec, const vector<double> &windows, const MovingAverageType type) const
 {
-    unordered_map<PriceHistory, map<double, vector<pair<double, double>>>> ma_map;
+    map<PriceHistory, map<double, vector<pair<double, double>>>> ma_map;
     for (auto stock : stock_vec)
     {
         map<double, vector<pair<double, double>>> inner_map;
@@ -271,9 +275,9 @@ string Analyzer::generate_stock_trend(const PriceHistory &stock, const double &s
     return message.str();
 }
 
-unordered_map<PriceHistory, string> Analyzer::generate_stocks_trend_map(const vector<PriceHistory> &stock_vec, const double &short_term_window, const double &long_term_window) const
+map<PriceHistory, string> Analyzer::generate_stocks_trend_map(const vector<PriceHistory> &stock_vec, const double &short_term_window, const double &long_term_window) const
 {
-    unordered_map<PriceHistory, string> momentum_map;
+    map<PriceHistory, string> momentum_map;
     for (auto stock : stock_vec)
     {
         string momentum = generate_stock_trend(stock, short_term_window, long_term_window);
