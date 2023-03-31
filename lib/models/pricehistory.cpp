@@ -7,7 +7,7 @@ using std::vector;
 
 PriceHistory::PriceHistory() {}
 
-PriceHistory::PriceHistory(const string &ticker, const vector<CandleStick> &candles, const int &period, const PeriodType &period_type, const FrequencyType &freq_type, const int &frequency) : ticker(ticker), candles(candles), period(period), periodType(periodType), frequency(frequency), frequencyType(freq_type) {}
+PriceHistory::PriceHistory(const AssetType &asset_type, const string &ticker, const vector<CandleStick> &candles, const int &period, const IntervalType &interval_type, const Interval &interval, const Range &range, const Interval &range_interval) : asset_type(asset_type), ticker(ticker), candles(candles), interval(interval), interval_type(interval_type), range(range), range_interval(range_interval) {}
 
 PriceHistory::PriceHistory(const PriceHistory &obj) : ticker(obj.get_ticker()), candles(obj.candles) {}
 
@@ -25,26 +25,30 @@ PriceHistory &PriceHistory::operator=(const PriceHistory &obj)
 
 PriceHistory::~PriceHistory() {}
 
+AssetType PriceHistory::get_asset_type()const {return asset_type;}
+
 string PriceHistory::get_ticker() const { return ticker; }
 
 vector<PriceHistory::CandleStick> PriceHistory::get_candles() const { return candles; }
 
-int PriceHistory::get_period() const { return period; }
+IntervalType PriceHistory::get_interval_type() const { return interval_type; }
 
-PeriodType PriceHistory::get_period_type() const { return periodType; }
+Interval PriceHistory::get_interval() const { return interval; }
 
-FrequencyType PriceHistory::get_frequecy_type() const { return frequencyType; }
+Range PriceHistory::get_range() const { return range; }
 
-int PriceHistory::get_frequency() const { return frequency; }
+Interval PriceHistory::get_range_interval() const {return range_interval;}
 
-void PriceHistory::set_ticker(const string &str) { ticker = str; }
+void PriceHistory::set_asset_type(const AssetType &asset_type) {this->asset_type = asset_type;}
+
+void PriceHistory::set_ticker(const string &ticker) { this->ticker = ticker; }
 
 void PriceHistory::set_candles(const vector<CandleStick> &candles) { this->candles = candles; }
 
-void PriceHistory::set_period(const int &period) { this->period = period; }
+void PriceHistory::set_interval(const Interval &interval) {this->interval = interval;}
 
-void PriceHistory::set_period_type(const PeriodType &per_type) { periodType = per_type; }
+void PriceHistory::set_interval_type(const IntervalType &interval_type) {this->interval_type = interval_type;}
 
-void PriceHistory::set_frequency(const int &frequency) { this->frequency = frequency; }
+void PriceHistory::set_range(const Range &range) {this->range = range;}
 
-void PriceHistory::set_frequency_type(const FrequencyType &freq_type) { frequencyType = freq_type; }
+void PriceHistory::set_range_interval(const Interval &range_interval) {this->range_interval = range_interval;}

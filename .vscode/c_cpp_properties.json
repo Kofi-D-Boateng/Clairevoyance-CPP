@@ -5,14 +5,15 @@
       "includePath": [
         "${workspaceFolder}/**",
         "${workspaceFolder}",
-        "${workspaceFolder}/include"
+        "C:/vcpkg/installed/"
       ],
       "defines": ["_DEBUG", "UNICODE", "_UNICODE"],
       "windowsSdkVersion": "10.0.19041.0",
-      "compilerPath": "C:/Program Files (x86)/Microsoft Visual Studio/2019/BuildTools/VC/Tools/MSVC/14.29.30037/bin/Hostx64/x64/cl.exe",
+      "compilerPath": "C:/Program Files (x86)/x86_64-12.2.0-release-posix-seh-msvcrt-rt_v10-rev2/mingw64/bin/cpp.exe",
       "cStandard": "c17",
       "cppStandard": "c++17",
-      "intelliSenseMode": "windows-msvc-x64"
+      "intelliSenseMode": "gcc-x86",
+      "compileCommands": ""
     }
   ],
   "version": 4

@@ -32,6 +32,12 @@ enum class MovingAverageType
     EXPONENTIAL
 };
 
+enum class TrendType{
+    UP,
+    DOWN,
+    NEUTRAL
+};
+
 class Analyzer
 {
 private:
@@ -57,7 +63,7 @@ private:
         Alpha: alpha = 2 / (n+1) [n = number of observations (window)]
         t: time in respect to previous closing price based on data given
     */
-    vector<pair<double, double>> generate_ema(const PriceHistory &stock, const double &window) const;
+    vector<pair<PriceHistory::CandleStick,double>> * generate_ema(const PriceHistory &stock, const double &window) const;
 
     /*
         Helper function that is called when the user wants to generate
@@ -70,13 +76,13 @@ private:
         Alpha: alpha = 2 / (n+1) [n = number of observations (window)]
         t: time in respect to previous closing price based on data given
     */
-    vector<pair<double, double>> generate_dynamic_ema(const PriceHistory &stock, const double &window) const;
+    // vector<pair<PriceHistory::CandleStick, double>> * generate_dynamic_ema(const PriceHistory &stock, const double &window) const;
     /*
         Helper function that is called when the user wants to generate
         a simple moving average. The weight of each average will be equal
         across all calculations.
     */
-    vector<pair<double, double>> generate_sma(const PriceHistory &stock, const double &window) const;
+    vector<pair<PriceHistory::CandleStick, double>> * generate_sma(const PriceHistory &stock, const double &window) const;
 
 public:
     Analyzer();
@@ -101,6 +107,12 @@ public:
     bool is_arbitrage_present(tuple<PriceHistory> &stock_tuple);
 
     /*
+        Takes in two prices and calculates the derivative, or rate of change between 
+        the prices
+    */
+    double generate_percent_change(const double &new_price,const double &old_price) const;
+
+    /*
         Takes in a pair of stocks and returns a correlation value between the two stocks.
     */
     double generate_correlation_value(PriceHistory &stock1, PriceHistory &stock2);
@@ -109,7 +121,7 @@ public:
         Takes in a vector of pairs and will return an unordered map of the pairs as the
         key and the mapped value will be the correlation between the pair of stocks
     */
-    map<pair<PriceHistory, PriceHistory>, double> generate_correlation_map(const vector<pair<PriceHistory, PriceHistory>> &stock_pairs);
+    map<pair<PriceHistory, PriceHistory>, double> * generate_correlation_map(const vector<pair<PriceHistory, PriceHistory>> &stock_pairs);
 
     /*
         Takes in a tuple of pairs and will return an unordered map with a stock as
@@ -126,13 +138,13 @@ public:
             s3: {s4:double}
         ]
     */
-    map<PriceHistory, map<PriceHistory, double>> generate_correlation_map(const vector<PriceHistory> &stock_vec);
+    map<PriceHistory, map<PriceHistory, double>> * generate_correlation_map(const vector<PriceHistory> &stock_vec);
 
     /*
         Takes in a stock and a window, and will return the simple moving average of the
         stock based on the window designated.
     */
-    vector<pair<double, double>> generate_moving_average(const PriceHistory &stock, const double &window, const MovingAverageType type) const;
+    vector<pair<PriceHistory::CandleStick, double>> * generate_moving_average( PriceHistory &stock,  double &window, MovingAverageType &type);
 
     /*
         Takes in a single stock or a vector of stocks and window or
@@ -141,7 +153,7 @@ public:
         key being a window and the values being a vector of either
         a simple moving average or exponential moving average.
     */
-    map<PriceHistory, map<double, vector<pair<double, double>>>> generate_moving_averages_map(const PriceHistory &stock, const vector<double> &windows, const MovingAverageType type) const;
+    map<double,vector<pair<PriceHistory::CandleStick, double>>*> * generate_moving_averages_map( PriceHistory &stock,  vector<double> &windows, MovingAverageType &type);
 
     /*
         Takes in a single stock or a vector of stocks and window or
@@ -150,7 +162,7 @@ public:
         key being a window and the values being a vector of either
         a simple moving average or exponential moving average.
     */
-    map<PriceHistory, map<double, vector<pair<double, double>>>> generate_moving_averages_map(const vector<PriceHistory> &stock_vec, const double &window, const MovingAverageType type) const;
+    vector<map<string, vector<pair<PriceHistory::CandleStick,double>>*>*> * generate_moving_averages_map(vector<PriceHistory> &stock_vec, double &window, MovingAverageType &type);
 
     /*
         Takes in a single stock or a vector of stocks and window or
@@ -159,19 +171,19 @@ public:
         key being a window and the values being a vector of either
         a simple moving average or exponential moving average.
     */
-    map<PriceHistory, map<double, vector<pair<double, double>>>> generate_moving_averages_map(const vector<PriceHistory> &stock_vec, const vector<double> &windows, const MovingAverageType type) const;
+    // vector<map<string, vector<pair<PriceHistory::CandleStick,double>>*>*> * generate_moving_averages_map(vector<PriceHistory> &stock_vec, vector<double> &window, MovingAverageType &type);
 
     /*
         Takes in a stock and two windows, a long term moving average window,
         and a short term moving average window, and print a string to the
         screen regarding the short term and long term trend of the stock
     */
-    string generate_stock_trend(const PriceHistory &stock, const double &short_term_window, const double &long_term_window) const;
+    string * generate_stock_trend(const PriceHistory &stock, const double &short_term_window, const double &long_term_window) const;
 
     /*
         Takes in a vector of stocks and two windows, a long term moving average window,
         and a short term moving average window, and print a string to the
         screen regarding the short term and long term trend of the stock
     */
-    map<PriceHistory, string> generate_stocks_trend_map(const vector<PriceHistory> &stock_vec, const double &short_term_window, const double &long_term_window) const;
+    map<PriceHistory, string*> * generate_stocks_trend_map(const vector<PriceHistory> &stock_vec, const double &short_term_window, const double &long_term_window) const;
 };

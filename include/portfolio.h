@@ -9,10 +9,11 @@
 #include <iostream>
 #include <stdexcept>
 #include <ostream>
-#include <unordered_map>
+#include <map>
+#include <utility>
 #include <string>
 using std::string;
-using std::unordered_map;
+using std::pair;
 
 class Portfolio
 {
@@ -20,12 +21,14 @@ class Portfolio
 private:
     double current_capital;
     double total_port_capital;
-    unordered_map<string, unordered_map<string, double>> holdings;
-    double percent_of_funds_available;
+    map<string, pair<string, double>> holdings;
+    double max_exposure_allowed;
+    double stop_loss;
+    double limit_order;
 
 public:
     // Constructor
-    Portfolio(const double &current_capital, const double &total_capital, const unordered_map<string, unordered_map<string, double>> &holdings, const double &perc);
+    Portfolio(const double &current_capital, const double &total_capital, const map<string, pair<string, double>> &holdings, const double &mea,const double& stop_loss, const double &limit_order);
 
     // Copy Constructor
     Portfolio(const Portfolio &obj);
@@ -42,11 +45,17 @@ public:
 
     double get_total_capital();
 
-    unordered_map<string, unordered_map<string, double>> get_holdings();
+    map<string, pair<string, double>> get_holdings();
+
+    double get_max_exposure_allowed() const;
+
+    double get_stop_loss() const;
+
+    double get_limit_order() const;
 
     void set_current_capital(const double &current_capital);
 
     void set_total_capital(const double &total_capital);
 
-    void set_holdings(const unordered_map<string, unordered_map<string, double>> &holdings);
+    void set_holdings(const map<string, pair<string, double>> &holdings);
 };
