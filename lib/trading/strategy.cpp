@@ -19,7 +19,7 @@ using std::map;
 using std::vector;
 using std::pair;
 using std::unique_ptr;
-using std::priority_queue;
+using std::queue;
 using std::stack;
 using std::greater;
 using std::less;
@@ -32,13 +32,13 @@ TradingStrategy::TradingStrategy(Analyzer &a,double &strong_buy_percent,double &
 
 //===================================================== PUBLIC METHODS ==================================================================//
 
-vector<pair<PriceHistory,TradeSignal>> * TradingStrategy::execute_moving_average_strategy(vector<PriceHistory> &stockVec, double &window, MovingAverageType &type)
+unique_ptr<vector<pair<PriceHistory,TradeSignal>>> TradingStrategy::execute_moving_average_strategy(vector<PriceHistory> &stockVec, double &window, MovingAverageType &type)
 {   
-    vector<pair<PriceHistory,TradeSignal>> * trade_result_vec = new vector<pair<PriceHistory,TradeSignal>>();
+    unique_ptr<vector<pair<PriceHistory,TradeSignal>>> trade_result_vec;
+    auto vec = trade_result_vec.get();
     for(PriceHistory stock:stockVec){
-
         auto result = execute_moving_average_strategy(stock,window,type);
-        (*trade_result_vec).push_back(pair<PriceHistory,TradeSignal>{stock,result});
+        vec->push_back(pair<PriceHistory,TradeSignal>{stock,result});
     }
     return trade_result_vec;    
 }
@@ -49,14 +49,19 @@ TradeSignal TradingStrategy::execute_moving_average_strategy(PriceHistory &stock
     unique_ptr<std::vector<std::pair<PriceHistory::CandleStick, double>>> avg_vec(this->analyzer.generate_moving_average(stock,window,type));
     TradeSignal signal = TradeSignal::HOLD;
     stack<double> price_change_stack;
+    stack<double> short_perc_change_stack;
+    stack<double> long_perc_change_stack;
+    queue<double> stock_volume;
+    
 
     auto vec_ptr = avg_vec.get();
-    for (const auto& candle_avg_pair : *vec_ptr) {
+    for (auto& candle_avg_pair : *vec_ptr) {
+        stock_volume.push(candle_avg_pair.first.volume);
         /*
             Accessing the Average Value of our pairs.
         */
         if (candle_avg_pair.second == 0) {
-
+            
         }
         else {
             if (candle_avg_pair.first.close > candle_avg_pair.second) {
@@ -64,11 +69,11 @@ TradeSignal TradingStrategy::execute_moving_average_strategy(PriceHistory &stock
                     At this moment, the price of the stock is greater than the moving average.
                     We can begin looking at going long, however we will conduct some more analysis on stock
                 */
+                auto std = this->analyzer.generate_std(candle_avg_pair.first.close,candle_avg_pair.second,(*vec_ptr).size());
                 signal = TradeSignal::LONG;
             }else if(candle_avg_pair.first.close < candle_avg_pair.second){
-
+                signal = TradeSignal::SHORT;
             }else{
-
                 signal = TradeSignal::HOLD;
             }
         }
@@ -79,8 +84,8 @@ TradeSignal TradingStrategy::execute_moving_average_strategy(PriceHistory &stock
 
 TradeSignal TradingStrategy::execute_arbitrage_strategy(Portfolio &port, vector<PriceHistory> &stockVec) {}
 
-vector<pair<PriceHistory,TradeSignal>> * TradingStrategy::execute_mean_reversion_strategy(vector<PriceHistory> &stock_vec, const double &window_size, const MovingAverageType &type) {
-    vector<pair<PriceHistory,TradeSignal>> * trade_result_vec = new vector<pair<PriceHistory,TradeSignal>>();
+unique_ptr<vector<pair<PriceHistory,TradeSignal>>> TradingStrategy::execute_mean_reversion_strategy(vector<PriceHistory> &stock_vec, const double &window_size, const MovingAverageType &type) {
+    unique_ptr<vector<pair<PriceHistory,TradeSignal>>>  trade_result_vec;
     vector<future<TradeSignal>> futures;
     for(const PriceHistory &stock:stock_vec){
         auto asynFunc = async(std::launch::async, [this, stock, window_size, type]() { 
@@ -89,9 +94,9 @@ vector<pair<PriceHistory,TradeSignal>> * TradingStrategy::execute_mean_reversion
          });
         futures.push_back(asynFunc);
     }
-
+    auto vec = trade_result_vec.get();
     for(int i{0}; i < futures.size(); i++){
-        (*trade_result_vec).push_back(pair<PriceHistory,TradeSignal>{stock_vec[i],futures[i].get()});
+        (*vec).push_back(pair<PriceHistory,TradeSignal>{stock_vec[i],futures[i].get()});
     }
 
     return trade_result_vec;
@@ -101,8 +106,8 @@ TradeSignal TradingStrategy::mean_reversion_strategy(const PriceHistory &stock, 
 
 TradeSignal TradingStrategy::execute_scalping_strategy(vector<PriceHistory> &stocks, const double &window_size, const MovingAverageType &type, const int &duration) {}
 
-vector<pair<pair<PriceHistory, PriceHistory>,TradeSignal>> * TradingStrategy::execute_pairs_trading_strategy(vector<pair<PriceHistory, PriceHistory>> &stock_pair_vec,const MovingAverageType &type) {
-    vector<pair<pair<PriceHistory, PriceHistory>,TradeSignal>> * trade_result_vec = new vector<pair<pair<PriceHistory, PriceHistory>,TradeSignal>>();
+unique_ptr<vector<pair<pair<PriceHistory, PriceHistory>,TradeSignal>>> TradingStrategy::execute_pairs_trading_strategy(vector<pair<PriceHistory, PriceHistory>> &stock_pair_vec,const MovingAverageType &type) {
+    unique_ptr<vector<pair<pair<PriceHistory, PriceHistory>,TradeSignal>>> trade_result_vec;
     vector<future<TradeSignal>> futures;
     for(const pair<PriceHistory, PriceHistory> &stock:stock_pair_vec){
         auto asynFunc = async(std::launch::async, [this, stock,type]() {
@@ -111,17 +116,17 @@ vector<pair<pair<PriceHistory, PriceHistory>,TradeSignal>> * TradingStrategy::ex
          });
         futures.push_back(asynFunc);
     }
-    
+    auto vec = trade_result_vec.get();
     for(int i{0}; i < futures.size();i++){
-        (*trade_result_vec).push_back(pair<pair<PriceHistory, PriceHistory>,TradeSignal>{stock_pair_vec[i],futures[i].get()});
+        vec->push_back(pair<pair<PriceHistory, PriceHistory>,TradeSignal>{stock_pair_vec[i],futures[i].get()});
     }
     return trade_result_vec;
 }
 
 TradeSignal TradingStrategy::pairs_trading_strategy(const pair<PriceHistory, PriceHistory> &stock_pair,const MovingAverageType &type) {}
 
-vector<pair<PriceHistory,TradeSignal>> * TradingStrategy::execute_bollinger_band_strategy( vector<PriceHistory> &stock_vec, const MovingAverageType &type,const double &window_size, const int &std) {
-    vector<pair<PriceHistory,TradeSignal>> * trade_result_vec = new vector<pair<PriceHistory,TradeSignal>>();
+unique_ptr<vector<pair<PriceHistory,TradeSignal>>> TradingStrategy::execute_bollinger_band_strategy( vector<PriceHistory> &stock_vec, const MovingAverageType &type,const double &window_size, const int &std) {
+    unique_ptr<vector<pair<PriceHistory,TradeSignal>>> trade_result_vec;
     
     vector<future<TradeSignal>> futures;
     for(const PriceHistory &stock:stock_vec){
@@ -131,9 +136,9 @@ vector<pair<PriceHistory,TradeSignal>> * TradingStrategy::execute_bollinger_band
          });
         futures.push_back(asynFunc);
     }
-
+    auto vec = trade_result_vec.get();
     for(int i{0}; i < futures.size(); i++){
-        (*trade_result_vec).push_back(pair<PriceHistory,TradeSignal>{stock_vec[i],futures[i].get()});
+        vec->push_back(pair<PriceHistory,TradeSignal>{stock_vec[i],futures[i].get()});
     }
     
     return trade_result_vec; 

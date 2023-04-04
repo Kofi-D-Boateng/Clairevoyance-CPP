@@ -13,12 +13,14 @@
 #include <vector>
 #include <string>
 #include <utility>
+#include <memory>
 #include "portfolio.h"
 #include "pricehistory.h"
 #include "analyzer.h"
 using std::pair;
 using std::string;
 using std::vector;
+using std::unique_ptr;
 
 /*
     Details the type of trade that should take place after the strategy
@@ -76,7 +78,7 @@ public:
         The Mean Reversion Strategy will look for opportunities to make trades where the current trend in the stock is attempting
         to revert back to the mean. 
     */
-    vector<pair<PriceHistory,TradeSignal>> * execute_mean_reversion_strategy(vector<PriceHistory> &stocks, const double &window_size, const MovingAverageType &type);
+   unique_ptr<vector<pair<PriceHistory,TradeSignal>>> execute_mean_reversion_strategy(vector<PriceHistory> &stocks, const double &window_size, const MovingAverageType &type);
 
     TradeSignal mean_reversion_strategy(const PriceHistory &stocks, const double &window_size, const MovingAverageType &type);
 
@@ -84,11 +86,11 @@ public:
 
     TradeSignal execute_momentum_strategy(vector<PriceHistory> &stocks, MovingAverageType &type);
 
-    vector<pair<pair<PriceHistory, PriceHistory>,TradeSignal>> * execute_pairs_trading_strategy(vector<pair<PriceHistory, PriceHistory>> &ticker_pairs,const MovingAverageType &type);
+    unique_ptr<vector<pair<pair<PriceHistory, PriceHistory>,TradeSignal>>> execute_pairs_trading_strategy(vector<pair<PriceHistory, PriceHistory>> &ticker_pairs,const MovingAverageType &type);
 
     TradeSignal pairs_trading_strategy(const pair<PriceHistory, PriceHistory> &stock_pairs,const MovingAverageType &type);
 
-    vector<pair<PriceHistory,TradeSignal>> * execute_bollinger_band_strategy(vector<PriceHistory> &stocks, const MovingAverageType &type, const double &window_size, const int &std);
+    unique_ptr<vector<pair<PriceHistory,TradeSignal>>> execute_bollinger_band_strategy(vector<PriceHistory> &stocks, const MovingAverageType &type, const double &window_size, const int &std);
 
     TradeSignal bollinger_band_strategy(const PriceHistory &stocks,const MovingAverageType &type, const double &window_size, const int &std);
 
@@ -99,7 +101,7 @@ public:
         amount of shares that should be up for consideration to buy given portfolio
         constraints designated, and the moving averages and exponential moving averages specified.
     */
-    vector<pair<PriceHistory,TradeSignal>> * execute_moving_average_strategy(vector<PriceHistory> &stocks, double &window, MovingAverageType &type);
+    unique_ptr<vector<pair<PriceHistory,TradeSignal>>> execute_moving_average_strategy(vector<PriceHistory> &stocks, double &window, MovingAverageType &type);
 
     /*
         The MA strategy uses a single average as the bases to which we will decide

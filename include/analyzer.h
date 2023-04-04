@@ -113,6 +113,16 @@ public:
     double generate_percent_change(const double &new_price,const double &old_price) const;
 
     /*
+        Generates the standard deviation of a set of data
+        @param double value - The value to be subtracted from the mean
+        @param double mean  - The mean of the data set
+        @param double size  - The size of the data set
+
+        @return double std  - The standard deviation from the mean
+    */
+    double generate_std(double &value, double &mean, const int &size);
+
+    /*
         Takes in a pair of stocks and returns a correlation value between the two stocks.
     */
     double generate_correlation_value(PriceHistory &stock1, PriceHistory &stock2);

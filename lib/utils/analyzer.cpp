@@ -8,6 +8,7 @@
 #include <string>
 #include <utility>
 #include <memory>
+#include <cmath>
 
 #include "include/analyzer.h"
 #include "include/pricehistory.h"
@@ -53,6 +54,8 @@ double Analyzer::generate_correlation_value(PriceHistory &stock1, PriceHistory &
 double Analyzer::generate_percent_change(const double &new_price, const double &old_price)const{
     return ((new_price-old_price)/old_price) * 100.00;
 }
+
+double Analyzer::generate_std(double &value, double &mean, const int &size){ return sqrt(pow(value - mean,2)/size);}
 
 map<pair<PriceHistory, PriceHistory>, double> * Analyzer::generate_correlation_map(const vector<pair<PriceHistory, PriceHistory>> &stock_pairs_list)
 {
