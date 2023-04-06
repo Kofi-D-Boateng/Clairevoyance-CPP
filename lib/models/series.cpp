@@ -20,4 +20,4 @@ Series::Series(const vector<MarketDataFrame> &series): time_series(series){}
 
 Series::~Series(){}
 
-Series Series::get()const {return time_series;}
+vector<MarketDataFrame> Series::get()const {return time_series;}

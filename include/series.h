@@ -73,5 +73,5 @@ class Series{
     public:
         Series(const vector<MarketDataFrame> &series);
         ~Series();
-        Series get()const;
+        vector<MarketDataFrame> get()const;
 };
