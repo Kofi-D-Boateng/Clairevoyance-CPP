@@ -14,6 +14,7 @@
 #include "include/pricehistory.h"
 #include "include/strategy.h"
 #include "include/analyzer.h"
+#include "include/series.h"
 
 using std::map;
 using std::vector;
@@ -46,38 +47,25 @@ unique_ptr<vector<pair<PriceHistory,TradeSignal>>> TradingStrategy::execute_movi
 // FINISH THIS METHOD UP
 // SET UP TRADE ALERTS WHEN THERE IS NO AVERAGE YET.
 TradeSignal TradingStrategy::execute_moving_average_strategy(PriceHistory &stock, double &window, MovingAverageType &type){    
-    unique_ptr<std::vector<std::pair<PriceHistory::CandleStick, double>>> avg_vec(this->analyzer.generate_moving_average(stock,window,type));
+    unique_ptr<Series> series_ptr(this->analyzer.generate_moving_average(stock,window,type));
     TradeSignal signal = TradeSignal::HOLD;
-    stack<double> price_change_stack;
-    stack<double> short_perc_change_stack;
-    stack<double> long_perc_change_stack;
     queue<double> stock_volume;
+    double volume_average{0.0};
     
-
-    auto vec_ptr = avg_vec.get();
-    for (auto& candle_avg_pair : *vec_ptr) {
-        stock_volume.push(candle_avg_pair.first.volume);
-        /*
-            Accessing the Average Value of our pairs.
-        */
-        if (candle_avg_pair.second == 0) {
-            
-        }
-        else {
-            if (candle_avg_pair.first.close > candle_avg_pair.second) {
-                /*
-                    At this moment, the price of the stock is greater than the moving average.
-                    We can begin looking at going long, however we will conduct some more analysis on stock
-                */
-                auto std = this->analyzer.generate_std(candle_avg_pair.first.close,candle_avg_pair.second,(*vec_ptr).size());
-                signal = TradeSignal::LONG;
-            }else if(candle_avg_pair.first.close < candle_avg_pair.second){
-                signal = TradeSignal::SHORT;
-            }else{
-                signal = TradeSignal::HOLD;
+    vector<MarketDataFrame> frames = series_ptr.get()->get();
+    for(int i{0}; i < frames.size();i++){
+        auto average = frames[i].get_mean();
+        auto close = frames[i].get_candle().close;
+        auto standard_dev = frames[i].get_standard_deviation();
+        auto avg_standard_dev = frames[i].get_average_standard_deviation();
+        if(average != 0.0){
+            if(close > average){
+                if(standard_dev != 0.0 && avg_standard_dev !=0.0){
+                    
+                }
             }
         }
-    };
+    }
 
     return signal;
 }
@@ -125,7 +113,7 @@ unique_ptr<vector<pair<pair<PriceHistory, PriceHistory>,TradeSignal>>> TradingSt
 
 TradeSignal TradingStrategy::pairs_trading_strategy(const pair<PriceHistory, PriceHistory> &stock_pair,const MovingAverageType &type) {}
 
-unique_ptr<vector<pair<PriceHistory,TradeSignal>>> TradingStrategy::execute_bollinger_band_strategy( vector<PriceHistory> &stock_vec, const MovingAverageType &type,const double &window_size, const int &std) {
+unique_ptr<vector<pair<PriceHistory,TradeSignal>>> TradingStrategy::execute_bollinger_band_strategy(vector<PriceHistory> &stock_vec, const MovingAverageType &type,const double &window_size, const int &std) {
     unique_ptr<vector<pair<PriceHistory,TradeSignal>>> trade_result_vec;
     
     vector<future<TradeSignal>> futures;
