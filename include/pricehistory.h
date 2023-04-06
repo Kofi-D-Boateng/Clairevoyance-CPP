@@ -15,22 +15,53 @@
 using std::string;
 using std::vector;
 
-enum class PeriodType
+
+enum class AssetType{
+    STOCK,
+    BOND,
+    FOREX,
+    CRYPTO,
+    ETF
+};
+
+enum class IntervalType
 {
+    SECOND,
+    MINUTE,
     DAY,
+    WEEK,
     MONTH,
+    QUARTER,
     YEAR,
     YTD
 };
 
-enum class FrequencyType
-{
-    MINUTE,
-    DAILY,
-    WEEKLY,
-    MONTHLY
+enum class Interval{
+    NONE,
+    ONE,
+    TWO,
+    THREE,
+    FOUR,
+    FIVE,
+    TEN,
+    FIFTEN,
+    TWENTY,
+    THIRTY
 };
 
+enum class Range{
+    NONE,
+    DAY,
+    WEEK,
+    MONTH,
+    YEAR
+};
+
+/**
+ * @class PriceHistory
+ * @author Kofi Boateng
+ * @details A class that represent a Time Series for a ticker.
+ */
 class PriceHistory
 {
 public:
@@ -50,6 +81,10 @@ public:
 
 private:
     /*
+        The type of asset the Time Series represents
+    */
+    AssetType asset_type;
+    /*
         The ticker symbol associated with the given history
     */
     string ticker;
@@ -58,49 +93,36 @@ private:
     */
     vector<CandleStick> candles;
     /*
-        The period of time for which the stock data was pulled from.
-        (i.e. 2 day or 3 month).
-
-        Valid Period numbers range as follow (asterisks mark defaults)
-        day: 1* to 5 or 10
-        month: 1-11
-        year: 1*-20
-        ytd: 1*
-
-        These values should match according to the type of data and periodType
-        you have chosen.
-
+        The range for which an interval is stretched
+        Interval types include: Second, Minute, Hour, Day, etc.
     */
-    int period;
+    IntervalType interval_type;
+
     /*
-        The period for which the stock data is taken from.
-        The periods within the enum are DAY,MONTH,YEAR,YTD
-        (Year to date). These flags represent the type of
-        charting style the data was pulled as (i.e. 2-DAY chart)
-
-        If using a price history that was generated with timestamps,
-        set period to 0.
+        The frequency of the time series
+        Intervals include, but not limited to: One, Two, Three, Four, Ten, etc
     */
-    PeriodType periodType;
+    Interval interval;
+
     /*
-        The frequency of the stock data.
-        The frequency should match with the alloted amount of time
-        each Time Series data point was taken from. These are the
-        valid frequencies (asterisk marks defaults)
-
-        minute: 1*, 5, 10, 15, 30
-        daily: 1*
-        weekly: 1*
-        monthly: 1*
+        The range represents the type of chart the stock data is modeled after.
+        For example, if the data is from a 2 day chart, the range will be DAY.
+        NONE is used only when the Time Series is a customized length.
     */
-    int frequency;
+    Range range;
 
-    FrequencyType frequencyType;
+    /*
+        The allotted amount of time the Time Series is supposed to represent.
+        For example, if the Time Series is from a 5 day chart. Then the
+        range_interval = FIVE, and range = DAY 
+    */
+    Interval range_interval;
+    
 
 public:
     // Constructor
     PriceHistory();
-    PriceHistory(const string &ticker, const vector<CandleStick> &candles, const int &period, const PeriodType &period_type, const FrequencyType &freq_type, const int &frequency);
+    PriceHistory(const AssetType &aseet_type, const string &ticker, const vector<CandleStick> &candles, const int &period, const IntervalType &interval_type, const Interval &interval, const Range &range, const Interval &range_interval);
 
     // Copy Constructor
     PriceHistory(const PriceHistory &obj);
@@ -113,27 +135,31 @@ public:
 
     //============================================== PUBLIC METHODS ========================================//
 
+    AssetType get_asset_type()const;
+
     string get_ticker() const;
 
     vector<CandleStick> get_candles() const;
 
-    PeriodType get_period_type() const;
+    IntervalType get_interval_type() const;
 
-    FrequencyType get_frequecy_type() const;
+    Interval get_interval() const;
 
-    int get_period() const;
+    Range get_range()const;
 
-    int get_frequency() const;
+    Interval get_range_interval()const;
+
+    void set_asset_type(const AssetType &asset_type);
 
     void set_ticker(const string &ticker);
 
     void set_candles(const vector<CandleStick> &stock_data);
 
-    void set_period(const int &period);
+    void set_interval_type(const IntervalType &interval_type);
 
-    void set_period_type(const PeriodType &period_type);
+    void set_interval(const Interval &interval);
 
-    void set_frequency_type(const FrequencyType &freq_type);
+    void set_range(const Range &range);
 
-    void set_frequency(const int &freq);
+    void set_range_interval(const Interval &interval);
 };
