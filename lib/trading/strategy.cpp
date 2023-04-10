@@ -44,25 +44,31 @@ unique_ptr<vector<pair<PriceHistory,TradeSignal>>> TradingStrategy::execute_movi
     return trade_result_vec;    
 }
 
-// FINISH THIS METHOD UP
-// SET UP TRADE ALERTS WHEN THERE IS NO AVERAGE YET.
+
 TradeSignal TradingStrategy::execute_moving_average_strategy(PriceHistory &stock, double &window, MovingAverageType &type){    
-    unique_ptr<Series> series_ptr(this->analyzer.generate_moving_average(stock,window,type));
+    Series series(stock);
+    series.rolling(window).moving_average(type);
     TradeSignal signal = TradeSignal::HOLD;
-    queue<double> stock_volume;
-    double volume_average{0.0};
     
-    vector<MarketDataFrame> frames = series_ptr.get()->get();
-    for(int i{0}; i < frames.size();i++){
-        auto average = frames[i].get_mean();
-        auto close = frames[i].get_candle().close;
-        auto standard_dev = frames[i].get_standard_deviation();
-        auto avg_standard_dev = frames[i].get_average_standard_deviation();
+    vector<MarketDataFrame> * frames = series.get();
+    for(int i{0}; i < frames->size();i++){
+        auto average = frames->at(i).get_mean();
+        auto close = frames->at(i).get_candle().close;
+        auto std = frames->at(i).get_standard_deviation();
         if(average != 0.0){
             if(close > average){
-                if(standard_dev != 0.0 && avg_standard_dev !=0.0){
-                    
+                if(std > 2.0){
+                    signal = TradeSignal::HOLD;
+                }else{
+                    signal = TradeSignal::LONG;
                 }
+            }else if(close < average){
+                if(std < 2.0){
+                    signal = TradeSignal::HOLD;
+                }
+                signal = TradeSignal::SHORT;
+            }else{
+                signal = TradeSignal::HOLD;
             }
         }
     }

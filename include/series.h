@@ -8,14 +8,17 @@
 
 #include <iostream>
 #include <vector>
-#include <pricehistory.h>
+#include <memory>
+#include "include/pricehistory.h"
+#include "include/serializable.h"
 
 using std::vector;
+using std::unique_ptr;
 
 /*
     The MarketDataFrame class mimics a single point in time of a time series. 
 */
-class MarketDataFrame{
+class MarketDataFrame : Serializable{
     private:
         /*
             A Candle stick backed by the PriceHistory Class
@@ -36,6 +39,7 @@ class MarketDataFrame{
 
     public:
         MarketDataFrame(const PriceHistory::CandleStick &candle, const double &mean,const double &std,const double &avg_std);
+        MarketDataFrame(PriceHistory::CandleStick &candle);
         ~MarketDataFrame();
         /*
             @return CandleStick cnalde - candle stick backed by the CandleStick class
@@ -56,6 +60,24 @@ class MarketDataFrame{
 
 };
 
+class Rolling : Serializable {
+
+    private:
+        Series& series_ref;
+        double &window;
+    public:
+        Rolling(Series &ref, double &window);
+        
+        ~Rolling();
+        
+        Series& moving_average(MovingAverageType &type);
+
+        Series& standard_deviation();
+
+        Series& average_standard_deviation();
+
+};
+
 
 /*
     The Series class is a wrapper class backed by a vector that will
@@ -63,15 +85,26 @@ class MarketDataFrame{
     be used to create different trading algorithms. The MarketDataFrame
     class is subjected to change as well as the Series.
 */
-class Series{
+class Series : Serializable{
     private:
         /*
             A post-processed time series of data that can be used for
             creating algorithmic trading
         */
-        vector<MarketDataFrame> time_series;
+        unique_ptr<vector<MarketDataFrame>> time_series;
     public:
-        Series(const vector<MarketDataFrame> &series);
+        Series(vector<MarketDataFrame> &series);
+        Series(PriceHistory &history);
         ~Series();
-        vector<MarketDataFrame> get()const;
+        /*
+            @return vector<MarketDataFrame> * frames --> a pointer to the wrapped time_series vector of market data
+        */
+        vector<MarketDataFrame> * get();
+
+        /*
+            @param double window --> window to be set for the rolling object
+            @return Rolling rolling object --> returns a reference to the Rolling Class (similar to Python)
+        */
+        Rolling& rolling(const double& window);
+        
 };

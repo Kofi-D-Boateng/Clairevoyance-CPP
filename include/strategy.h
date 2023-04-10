@@ -14,23 +14,15 @@
 #include <string>
 #include <utility>
 #include <memory>
-#include "portfolio.h"
-#include "pricehistory.h"
-#include "analyzer.h"
+#include "include/portfolio.h"
+#include "include/pricehistory.h"
+#include "include/analyzer.h"
+#include "include/enums.h"
+
 using std::pair;
 using std::string;
 using std::vector;
 using std::unique_ptr;
-
-/*
-    Details the type of trade that should take place after the strategy
-    has finished.
- */
-enum class TradeSignal {
-    LONG = 0,
-    SHORT = 1,
-    HOLD = 2
-};
 
 /*
     A class that handles all the different type of trading strategies that
