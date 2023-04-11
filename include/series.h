@@ -11,14 +11,16 @@
 #include <memory>
 #include "include/pricehistory.h"
 #include "include/serializable.h"
+#include "include/enums.h"
 
 using std::vector;
 using std::unique_ptr;
+using std::shared_ptr;
 
 /*
     The MarketDataFrame class mimics a single point in time of a time series. 
 */
-class MarketDataFrame : Serializable{
+class MarketDataFrame : public Serializable{
     private:
         /*
             A Candle stick backed by the PriceHistory Class
@@ -60,21 +62,31 @@ class MarketDataFrame : Serializable{
 
 };
 
-class Rolling : Serializable {
+class Rolling : public Serializable {
 
     private:
-        Series& series_ref;
-        double &window;
+        Series &original_series;
+        const double &window;
     public:
-        Rolling(Series &ref, double &window);
+        Rolling(Series &series_ptr, const double &window);
         
         ~Rolling();
-        
-        Series& moving_average(MovingAverageType &type);
+        /*
+            @param MovingAverageType type: The type of moving average to calculate
+            @return unique_ptr<Series> original_series: This will return the original series object that called the rolling method
 
-        Series& standard_deviation();
+        */
+        void moving_average(MovingAverageType &type);
+        /*
+            @return unique_ptr<Series> original_series: This will return the original series object that called the rolling method
 
-        Series& average_standard_deviation();
+        */
+        void standard_deviation();
+        /*
+            @return unique_ptr<Series> original_series: This will return the original series object that called the rolling method
+
+        */
+        void average_standard_deviation();
 
 };
 
@@ -85,15 +97,28 @@ class Rolling : Serializable {
     be used to create different trading algorithms. The MarketDataFrame
     class is subjected to change as well as the Series.
 */
-class Series : Serializable{
+class Series : public Serializable{
     private:
         /*
             A post-processed time series of data that can be used for
             creating algorithmic trading
         */
         unique_ptr<vector<MarketDataFrame>> time_series;
+
+        /*
+            The type of interval that the series will match,
+            which is inheritied from the PriceHistory class
+            for which the Series is built upon
+        */
+        IntervalType interval_type;
+        /*
+            The interval amount that the series will match,
+            which is inheritied from the PriceHistory class
+            for which the Series is built upon
+        */
+        Interval interval;
     public:
-        Series(vector<MarketDataFrame> &series);
+        Series(vector<MarketDataFrame> &series, IntervalType &interval_type, Interval &interval);
         Series(PriceHistory &history);
         ~Series();
         /*
@@ -105,6 +130,6 @@ class Series : Serializable{
             @param double window --> window to be set for the rolling object
             @return Rolling rolling object --> returns a reference to the Rolling Class (similar to Python)
         */
-        Rolling& rolling(const double& window);
+        unique_ptr<Rolling> rolling(const double& window);
         
 };

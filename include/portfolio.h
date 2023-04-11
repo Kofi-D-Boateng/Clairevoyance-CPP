@@ -16,7 +16,7 @@
 using std::string;
 using std::pair;
 
-class Portfolio : Serializable
+class Portfolio : public Serializable
 {
 
 private:

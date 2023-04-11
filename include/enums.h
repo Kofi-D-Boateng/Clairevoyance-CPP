@@ -59,7 +59,7 @@ enum class Range{
     has finished.
  */
 enum class TradeSignal {
-    LONG = 0,
-    SHORT = 1,
-    HOLD = 2
+    LONG,
+    SHORT,
+    HOLD
 };

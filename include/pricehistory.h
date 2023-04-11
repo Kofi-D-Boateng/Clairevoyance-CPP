@@ -24,7 +24,7 @@ using std::vector;
  * @author Kofi Boateng
  * @details A class that represent a Time Series for a ticker.
  */
-class PriceHistory : Serializable
+class PriceHistory : public Serializable
 {
 public:
     class CandleStick

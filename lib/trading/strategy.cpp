@@ -47,10 +47,19 @@ unique_ptr<vector<pair<PriceHistory,TradeSignal>>> TradingStrategy::execute_movi
 
 TradeSignal TradingStrategy::execute_moving_average_strategy(PriceHistory &stock, double &window, MovingAverageType &type){    
     Series series(stock);
-    series.rolling(window).moving_average(type);
-    TradeSignal signal = TradeSignal::HOLD;
+    Rolling * rolling = series.rolling(window).get();
+    rolling->moving_average(type);
+    rolling->standard_deviation();
+    rolling->average_standard_deviation();
     
+    TradeSignal signal = TradeSignal::HOLD;
     vector<MarketDataFrame> * frames = series.get();
+    /*
+        For now, we will use 2.0 as the max deviation movemnets from the mean
+        we will allow the close to be. However, we will come back to this and
+        adjust parametes and add more analysis to pinpoint the perfect spot to
+        trigger signals.
+    */
     for(int i{0}; i < frames->size();i++){
         auto average = frames->at(i).get_mean();
         auto close = frames->at(i).get_candle().close;
