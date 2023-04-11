@@ -11,58 +11,20 @@
 #include <ostream>
 #include <string>
 #include <vector>
+#include "include/serializable.h"
+#include "include/enums.h"
+
 
 using std::string;
 using std::vector;
 
-
-enum class AssetType{
-    STOCK,
-    BOND,
-    FOREX,
-    CRYPTO,
-    ETF
-};
-
-enum class IntervalType
-{
-    SECOND,
-    MINUTE,
-    DAY,
-    WEEK,
-    MONTH,
-    QUARTER,
-    YEAR,
-    YTD
-};
-
-enum class Interval{
-    NONE,
-    ONE,
-    TWO,
-    THREE,
-    FOUR,
-    FIVE,
-    TEN,
-    FIFTEN,
-    TWENTY,
-    THIRTY
-};
-
-enum class Range{
-    NONE,
-    DAY,
-    WEEK,
-    MONTH,
-    YEAR
-};
 
 /**
  * @class PriceHistory
  * @author Kofi Boateng
  * @details A class that represent a Time Series for a ticker.
  */
-class PriceHistory
+class PriceHistory : public Serializable
 {
 public:
     class CandleStick

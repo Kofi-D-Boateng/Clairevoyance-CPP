@@ -16,9 +16,10 @@
 #include <utility>
 #include <tuple>
 #include <memory>
-#include "pricehistory.h"
-#include "series.h"
-#include "customhashes.h"
+#include "include/pricehistory.h"
+#include "include/series.h"
+#include "include/customhashes.h"
+#include "include/enums.h"
 
 using std::vector;
 using std::string;
@@ -29,18 +30,6 @@ using std::cout;
 using std::endl;
 using std::unique_ptr;
 
-
-enum class MovingAverageType
-{
-    SIMPLE,
-    EXPONENTIAL
-};
-
-enum class TrendType{
-    UP,
-    DOWN,
-    NEUTRAL
-};
 
 class Analyzer
 {

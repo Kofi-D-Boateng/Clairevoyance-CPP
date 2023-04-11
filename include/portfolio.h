@@ -12,10 +12,11 @@
 #include <map>
 #include <utility>
 #include <string>
+#include "include/serializable.h"
 using std::string;
 using std::pair;
 
-class Portfolio
+class Portfolio : public Serializable
 {
 
 private:
@@ -58,4 +59,6 @@ public:
     void set_total_capital(const double &total_capital);
 
     void set_holdings(const map<string, pair<string, double>> &holdings);
+
+    void print() override {};
 };
