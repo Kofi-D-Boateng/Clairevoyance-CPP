@@ -7,9 +7,9 @@
 using std::string;
 using std::map;
 
-Portfolio::Portfolio(const double &current_capital, const double &total_capital, const map<string, pair<string, double>> &holdings, const double &mea, const double &stop_loss, const double &limit_order) : Serializable(), current_capital(current_capital), total_port_capital(total_capital), holdings(holdings), max_exposure_allowed(mea), stop_loss(stop_loss),limit_order(limit_order){};
+Portfolio::Portfolio(const double &current_capital, const double &total_capital, const map<string, pair<string, double>> &holdings, const double &mea, const double &stop_loss, const double &limit_order) : Serializable("Portfolio"), current_capital(current_capital), total_port_capital(total_capital), holdings(holdings), max_exposure_allowed(mea), stop_loss(stop_loss),limit_order(limit_order){};
 
-Portfolio::Portfolio(const Portfolio &obj) : Serializable(), current_capital(obj.current_capital), total_port_capital(obj.total_port_capital), holdings(obj.holdings), max_exposure_allowed(obj.max_exposure_allowed), stop_loss(obj.stop_loss),limit_order(obj.limit_order){};
+Portfolio::Portfolio(const Portfolio &obj) : Serializable("Portfolio"), current_capital(obj.current_capital), total_port_capital(obj.total_port_capital), holdings(obj.holdings), max_exposure_allowed(obj.max_exposure_allowed), stop_loss(obj.stop_loss),limit_order(obj.limit_order){};
 
 Portfolio &Portfolio::operator=(const Portfolio &obj)
 {
