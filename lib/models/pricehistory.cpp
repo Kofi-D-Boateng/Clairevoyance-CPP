@@ -6,11 +6,11 @@
 using std::string;
 using std::vector;
 
-PriceHistory::PriceHistory() : Serializable() {}
+PriceHistory::PriceHistory() : Serializable("PriceHistory") {}
 
-PriceHistory::PriceHistory(const AssetType &asset_type, const string &ticker, const vector<CandleStick> &candles, const int &period, const IntervalType &interval_type, const Interval &interval, const Range &range, const Interval &range_interval) : Serializable(), asset_type(asset_type), ticker(ticker), candles(candles), interval(interval), interval_type(interval_type), range(range), range_interval(range_interval) {}
+PriceHistory::PriceHistory(const AssetType &asset_type, const string &ticker, const vector<CandleStick> &candles, const int &period, const IntervalType &interval_type, const Interval &interval, const Range &range, const Interval &range_interval) : Serializable("PriceHistory"), asset_type(asset_type), ticker(ticker), candles(candles), interval(interval), interval_type(interval_type), range(range), range_interval(range_interval) {}
 
-PriceHistory::PriceHistory(const PriceHistory &obj) : Serializable(), ticker(obj.get_ticker()), candles(obj.candles) {}
+PriceHistory::PriceHistory(const PriceHistory &obj) : Serializable("PriceHistory"), ticker(obj.get_ticker()), candles(obj.candles) {}
 
 PriceHistory::CandleStick::CandleStick() {}
 

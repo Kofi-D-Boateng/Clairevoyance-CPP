@@ -1,12 +1,8 @@
 {
   "configurations": [
     {
-      "name": "Win32",
-      "includePath": [
-        "${workspaceFolder}/**",
-        "${workspaceFolder}",
-        "C:/vcpkg/installed/"
-      ],
+      "name": "Win64",
+      "includePath": ["${workspaceFolder}/**", "${workspaceFolder}"],
       "defines": ["_DEBUG", "UNICODE", "_UNICODE"],
       "windowsSdkVersion": "10.0.19041.0",
       "compilerPath": "C:/Program Files (x86)/x86_64-12.2.0-release-posix-seh-msvcrt-rt_v10-rev2/mingw64/bin/cpp.exe",

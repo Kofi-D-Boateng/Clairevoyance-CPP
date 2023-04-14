@@ -10,8 +10,8 @@
         "${file}",
         "-o",
         "${fileDirname}\\${fileBasenameNoExtension}.exe",
-        "C://vcpkg/installed/x86-windows/include",
-        "C://vcpkg/installed/x86-windows/lib"
+        "C://Program files/vcpkg/installed/x86-windows/include",
+        "C://Program files/vcpkg/installed/x86-windows/lib"
       ],
       "options": {
         "cwd": "${fileDirname}"
